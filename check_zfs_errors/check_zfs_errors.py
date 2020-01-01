@@ -37,6 +37,7 @@ scrub_match = re.search(SCRUB_REGEX, result)
 scrub_warning = None
 if not scrub_match:
     print(f"ZFS Errors WARNING ({pool_name}): No recent scrub.")
+    exit(1)
 else:
     if int(scrub_match["errors"]) > 0:
         repaired_errors = scrub_match["errors"]
@@ -64,13 +65,17 @@ total_all = total_r + total_w + total_c + total_s
 if total_all == 0 and num_online == len(matches):
     if scrub_warning:
         print(scrub_warning)
+        exit(1)
     else:
         print(
             f"ZFS Errors OK ({pool_name}): All {num_online} entries online with no errors."
         )
+        exit(0)
 elif num_online != len(matches):
     print(
         f"ZFS Errors CRITICAL ({pool_name}): {len(matches) - num_online} entries not online."
     )
+    exit(2)
 else:
     print(f"ZFS Errors CRITICAL ({pool_name}): {total_all} errors detected.")
+    exit(2)

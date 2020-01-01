@@ -30,7 +30,7 @@ if args.wrapper is not None:
         pacman_command = SUPPORTED_WRAPPERS[args.wrapper]
     else:
         print("PACMAN ERROR: Unsupported wrapper: {args.wrapper}.")
-        exit(1)
+        exit(2)
 
 # Synchronize package databases
 sync_result = subprocess.call(
@@ -57,6 +57,7 @@ if num_outdated >= critical_threshold:
         )
     else:
         print(f"PACMAN CRITICAL: {num_outdated} packages out of date.")
+    exit(2)
 elif num_outdated >= warning_threshold:
     if verbose:
         print(
@@ -64,6 +65,7 @@ elif num_outdated >= warning_threshold:
         )
     else:
         print(f"PACMAN WARNING: {num_outdated} packages out of date.")
+    exit(1)
 else:
     if verbose:
         print(
